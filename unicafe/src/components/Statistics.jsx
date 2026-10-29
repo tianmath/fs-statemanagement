@@ -4,10 +4,8 @@ const Statistics = () => {
   const { good, neutral, bad } = useStatistics();
   const all = good + neutral + bad;
 
-  if (all === 0) return <div>No feedback given</div>;
-
-  const average = (good - bad) / all;
-  const positive = (good * 100) / all;
+  const average = all === 0 ? 0 : (good - bad) / all;
+  const positive = all === 0 ? 0 : (good * 100) / all;
 
   return (
     <div>
