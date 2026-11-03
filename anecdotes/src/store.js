@@ -43,7 +43,10 @@ export const useAnecdotes = () => {
   const anecdotes = useAnecdoteStore((state) => state.anecdotes);
   const filter = useAnecdoteStore((state) => state.filter);
 
-  if (filter) return anecdotes.filter((anec) => anec.content.includes(filter));
+  if (filter)
+    return anecdotes.filter((anec) =>
+      anec.content.toLowerCase().includes(filter),
+    );
 
   return anecdotes;
 };
