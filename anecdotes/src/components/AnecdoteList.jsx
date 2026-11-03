@@ -8,7 +8,7 @@ const AnecdoteList = () => {
 
   const handleVote = (anecdote) => {
     vote(anecdote.id);
-    setMessage(`You voted '${anecdote.content}'`);
+    setMessage(`you voted '${anecdote.content}'`);
   };
 
   const handleDelete = (anecdote) => {
