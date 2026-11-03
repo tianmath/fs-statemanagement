@@ -1,9 +1,15 @@
 import { useAnecdotes, useAnecdotesActions } from '../store';
+import { useNotificationActions } from './NotificationStore';
 
 const AnecdoteList = () => {
   const anecdotes = useAnecdotes();
-
   const { vote } = useAnecdotesActions();
+  const { setMessage } = useNotificationActions();
+
+  const handleVote = (anecdote) => {
+    vote(anecdote.id);
+    setMessage(`You voted '${anecdote.content}'`);
+  };
 
   return (
     <div>
@@ -12,7 +18,7 @@ const AnecdoteList = () => {
           <div>{anecdote.content}</div>
           <div>
             has {anecdote.votes}
-            <button onClick={() => vote(anecdote.id)}>vote</button>
+            <button onClick={() => handleVote(anecdote)}>vote</button>
           </div>
         </div>
       ))}
