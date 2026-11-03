@@ -1,13 +1,15 @@
 import { create } from 'zustand';
 import anecdoteService from './services/anecdotes';
 
+const anecdotesDescendingSort = (anec1, anec2) => anec2.votes - anec1.votes;
+
 const useAnecdoteStore = create((set, get) => ({
   anecdotes: [],
   filter: '',
   actions: {
     initialize: async () => {
       const anecdotes = await anecdoteService.getAll();
-      set(() => ({ anecdotes }));
+      set(() => ({ anecdotes: anecdotes.toSorted(anecdotesDescendingSort) }));
     },
     add: async (content) => {
       const newAnecdote = await anecdoteService.createNew(content);
@@ -24,7 +26,7 @@ const useAnecdoteStore = create((set, get) => ({
       set((state) => ({
         anecdotes: state.anecdotes
           .map((anec) => (anec.id === id ? updated : anec))
-          .toSorted((anec1, anec2) => anec2.votes - anec1.votes),
+          .toSorted(anecdotesDescendingSort),
       }));
     },
     setFilter: (value) => set(() => ({ filter: value.toLowerCase() })),
