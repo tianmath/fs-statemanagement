@@ -73,4 +73,10 @@ describe('with some anecdotes already in the state', () => {
       anecdotes.toSorted((anec1, anec2) => anec2.votes - anec1.votes),
     );
   });
+
+  it('component displaying anecdotes recieves a properly filtered list of anecdotes', () => {
+    useAnecdoteStore.setState({ filter: 'simplicity' });
+    const { result: anecdotesResult } = renderHook(() => useAnecdotes());
+    expect(anecdotesResult.current).toEqual([anecdotes[0]]);
+  });
 });
