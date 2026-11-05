@@ -1,4 +1,4 @@
-import { it, expect, beforeEach, vi } from 'vitest';
+import { it, expect, beforeEach, vi, describe } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 
 vi.mock('./services/anecdotes', () => ({
@@ -30,4 +30,47 @@ it('state is initialized with the anecdotes returned by the backend', async () =
 
   const { result: anecdotesResult } = renderHook(() => useAnecdotes());
   expect(anecdotesResult.current).toEqual(mockAnecdotes);
+});
+
+describe('with some anecdotes already in the state', () => {
+  const anecdotes = [
+    {
+      content: 'Simplicity is the ultimate sophistication',
+      id: '2',
+      votes: 5,
+    },
+    {
+      content: 'Make it work, then make it fast',
+      id: '5',
+      votes: 0,
+    },
+    {
+      content: 'There are two hard things in computer science',
+      id: '4',
+      votes: 3,
+    },
+    {
+      content: 'Real artists ship code',
+      id: '1',
+      votes: 7,
+    },
+    {
+      content: 'Untested code is broken code',
+      id: '3',
+      votes: 2,
+    },
+  ];
+
+  beforeEach(() => {
+    useAnecdoteStore.setState({ anecdotes });
+  });
+
+  it('component displaying anecdotes receives the anecdotes from the store sorted by votes', () => {
+    const { result: anecdotesResult } = renderHook(() => useAnecdotes());
+
+    expect(anecdotesResult.current).not.toEqual(anecdotes);
+    expect(anecdotesResult.current).toEqual(
+      anecdotes.toSorted((anec1, anec2) => anec2.votes - anec1.votes),
+    );
+  });
 });
