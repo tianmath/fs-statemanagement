@@ -9,7 +9,7 @@ const useAnecdoteStore = create((set, get) => ({
   actions: {
     initialize: async () => {
       const anecdotes = await anecdoteService.getAll();
-      set(() => ({ anecdotes: anecdotes.toSorted(anecdotesDescendingSort) }));
+      set(() => ({ anecdotes: anecdotes }));
     },
     add: async (content) => {
       const newAnecdote = await anecdoteService.createNew(content);
@@ -30,9 +30,9 @@ const useAnecdoteStore = create((set, get) => ({
         votes: anecdote.votes + 1,
       });
       set((state) => ({
-        anecdotes: state.anecdotes
-          .map((anec) => (anec.id === id ? updated : anec))
-          .toSorted(anecdotesDescendingSort),
+        anecdotes: state.anecdotes.map((anec) =>
+          anec.id === id ? updated : anec,
+        ),
       }));
     },
     setFilter: (value) => set(() => ({ filter: value.toLowerCase() })),
@@ -40,7 +40,9 @@ const useAnecdoteStore = create((set, get) => ({
 }));
 
 export const useAnecdotes = () => {
-  const anecdotes = useAnecdoteStore((state) => state.anecdotes);
+  const anecdotes = useAnecdoteStore((state) => state.anecdotes).toSorted(
+    anecdotesDescendingSort,
+  );
   const filter = useAnecdoteStore((state) => state.filter);
 
   if (filter)
