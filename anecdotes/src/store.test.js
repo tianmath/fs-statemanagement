@@ -79,4 +79,28 @@ describe('with some anecdotes already in the state', () => {
     const { result: anecdotesResult } = renderHook(() => useAnecdotes());
     expect(anecdotesResult.current).toEqual([anecdotes[0]]);
   });
+
+  it('voting increases the number of votes for an anecdote', async () => {
+    const { result: anecdotesResult } = renderHook(() => useAnecdotes());
+
+    const anecdoteId = '5';
+    const anecdote = anecdotesResult.current.find(
+      (anec) => anec.id === anecdoteId,
+    );
+
+    anecdoteService.update.mockResolvedValue({
+      ...anecdote,
+      votes: anecdote.votes + 1,
+    });
+
+    const { result: actionsResult } = renderHook(() => useAnecdotesActions());
+
+    await act(async () => {
+      await actionsResult.current.vote(anecdoteId);
+    });
+
+    expect(
+      anecdotesResult.current.find((anec) => anec.id === anecdoteId).votes,
+    ).toEqual(anecdote.votes + 1);
+  });
 });
