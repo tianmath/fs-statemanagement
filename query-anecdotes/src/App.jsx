@@ -1,25 +1,11 @@
-import { useState } from 'react';
-import NotificationContext from './NotificationContext';
 import AnecdoteForm from './components/AnecdoteForm';
 import Notification from './components/Notification';
 import { useAnecdotes } from './hooks/useAnecdotes';
+import useNotify from './hooks/useNotify';
 
 const App = () => {
   const { anecdotes, isPending, isError, vote } = useAnecdotes();
-
-  const [message, setMessage] = useState('');
-  const [messageTimer, setMessageTimer] = useState(null);
-
-  const displayMessage = (msg, timeout) => {
-    if (messageTimer !== null) clearTimeout(messageTimer);
-
-    setMessage(msg);
-    const currentMessageTimer = setTimeout(() => {
-      setMessage('');
-      setMessageTimer(null);
-    }, timeout);
-    setMessageTimer(currentMessageTimer);
-  };
+  const { displayMessage } = useNotify();
 
   const handleVote = (anecdote) => {
     vote(anecdote);
@@ -38,10 +24,8 @@ const App = () => {
     <div>
       <h3>Anecdote app</h3>
 
-      <NotificationContext.Provider value={{ message, displayMessage }}>
-        <Notification />
-        <AnecdoteForm />
-      </NotificationContext.Provider>
+      <Notification />
+      <AnecdoteForm />
 
       {anecdotes.map((anecdote) => (
         <div key={anecdote.id}>
