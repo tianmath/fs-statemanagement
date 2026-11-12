@@ -6,12 +6,16 @@ const AnecdoteForm = () => {
   const { addAnecdote } = useAnecdotes();
   const { displayMessage } = useContext(NotificationContext);
 
-  const onCreate = (e) => {
+  const onCreate = async (e) => {
     e.preventDefault();
     const content = e.target.anecdote.value;
-    addAnecdote(content);
+    try {
+      await addAnecdote(content);
+      displayMessage(`Created '${content}'`, 5000);
+    } catch (err) {
+      displayMessage(err.message, 5000);
+    }
     e.target.reset();
-    displayMessage(`Created '${content}'`, 5000);
   };
 
   return (
