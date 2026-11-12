@@ -1,19 +1,12 @@
 import { useAnecdotes } from '../hooks/useAnecdotes';
-import useNotify from '../hooks/useNotify';
 
 const AnecdoteForm = () => {
   const { addAnecdote } = useAnecdotes();
-  const { displayMessage } = useNotify();
 
   const onCreate = async (e) => {
     e.preventDefault();
     const content = e.target.anecdote.value;
-    try {
-      await addAnecdote(content);
-      displayMessage(`Created '${content}'`, 5000);
-    } catch (err) {
-      displayMessage(err.message, 5000);
-    }
+    addAnecdote(content);
     e.target.reset();
   };
 

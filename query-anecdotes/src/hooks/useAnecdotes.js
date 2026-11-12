@@ -4,9 +4,11 @@ import {
   createAnecdote,
   updateAnecdote,
 } from '../services/anecdotes';
+import useNotify from './useNotify';
 
 export const useAnecdotes = () => {
   const queryClient = useQueryClient();
+  const { displayMessage } = useNotify();
 
   const result = useQuery({
     queryKey: ['anecdotes'],
@@ -19,6 +21,10 @@ export const useAnecdotes = () => {
     onSuccess: (newAnecdote) => {
       const anecdotes = queryClient.getQueryData(['anecdotes']);
       queryClient.setQueryData(['anecdotes'], anecdotes.concat(newAnecdote));
+      displayMessage(`Created '${newAnecdote.content}'`, 5000);
+    },
+    onError: (err) => {
+      displayMessage(err.message, 5000);
     },
   });
 
@@ -32,6 +38,7 @@ export const useAnecdotes = () => {
           anec.id === updatedAnecdote.id ? updatedAnecdote : anec,
         ),
       );
+      displayMessage(`you voted '${updatedAnecdote.content}'`, 5000);
     },
   });
 
@@ -39,8 +46,7 @@ export const useAnecdotes = () => {
     anecdotes: result.data,
     isPending: result.isPending,
     isError: result.isError,
-    addAnecdote: (content) =>
-      newAnecdoteMutation.mutateAsync({ content, votes: 0 }),
+    addAnecdote: (content) => newAnecdoteMutation.mutate({ content, votes: 0 }),
     vote: (anecdote) =>
       updateAnecdoteMutation.mutate({ ...anecdote, votes: anecdote.votes + 1 }),
   };
